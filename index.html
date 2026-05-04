@@ -115,23 +115,13 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 780px) { .nav, .nav.scrolled { padding-left: 20px; padding-right: 20px; } }
 
 .brand { display: flex; align-items: center; gap: 12px; }
-.brand-mark {
-  width: 40px; height: 40px;
-  border: 1.5px solid var(--line-strong);
-  display: grid; place-items: center; border-radius: 50%;
-  font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--gold);
-  transition: border-color .3s;
+.brand-logo {
+  height: 44px; width: auto;
+  transition: opacity .3s;
 }
-.brand:hover .brand-mark { border-color: var(--gold); }
-.brand-name {
-  font-family: var(--serif); font-size: 16px; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--cream-soft); font-weight: 400;
-}
-.brand-name small {
-  display: block; font-family: var(--mono); font-size: 9px;
-  letter-spacing: .22em; color: var(--muted); margin-top: 2px; font-weight: 400;
-  text-transform: uppercase;
-}
+.brand:hover .brand-logo { opacity: .8; }
+/* Nav dark mode: invert logo */
+.nav:not(.scrolled) .brand-logo { filter: brightness(0) invert(1); }
 
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a {
@@ -148,6 +138,13 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-cta:hover { background: var(--gold); color: var(--white) !important; border-color: var(--gold); }
 @media (max-width: 960px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+/* Nav on dark hero */
+.nav:not(.scrolled) .nav-links a { color: rgba(255,255,255,.6); }
+.nav:not(.scrolled) .nav-links a:hover { color: var(--white); }
+.nav:not(.scrolled) .nav-cta { color: var(--white) !important; border-color: rgba(255,255,255,.3); }
+.nav:not(.scrolled) .mob-toggle { border-color: rgba(255,255,255,.3); }
+.nav:not(.scrolled) .mob-toggle span { background: var(--white); }
 
 /* ═══════════════════════════════════════
    MOBILE MENU
@@ -193,17 +190,17 @@ a { color: inherit; text-decoration: none; }
   position: relative; min-height: 100vh; min-height: 100svh;
   display: flex; align-items: center;
   overflow: hidden;
-  background: linear-gradient(165deg, var(--bg) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+  background: #1a1815;
 }
 .hero-video-wrap {
   position: absolute; inset: 0; z-index: 0;
 }
 .hero-video-wrap video {
-  width: 100%; height: 100%; object-fit: cover; opacity: .12;
+  width: 100%; height: 100%; object-fit: cover;
 }
 .hero-overlay {
   position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(180deg, var(--bg) 0%, rgba(245,242,236,.6) 40%, rgba(245,242,236,.75) 100%);
+  background: linear-gradient(180deg, rgba(26,24,21,.55) 0%, rgba(26,24,21,.35) 40%, rgba(26,24,21,.6) 100%);
 }
 .hero-content {
   position: relative; z-index: 3;
@@ -227,20 +224,25 @@ a { color: inherit; text-decoration: none; }
 
 .hero-sub {
   margin-top: 28px; max-width: 500px;
-  font-size: 17px; line-height: 1.65; color: var(--muted);
+  font-size: 17px; line-height: 1.65; color: rgba(255,255,255,.7);
   opacity: 0; transform: translateY(16px);
   transition: all 1s var(--ease) .5s;
 }
 .hero.in .hero-sub { opacity: 1; transform: none; }
+
+/* Hero light-text overrides */
+.hero .eyebrow { color: var(--gold-bright); }
+.hero .h-display { color: var(--white); }
+.hero .h-display em { color: var(--gold-bright); }
 
 /* "Bez objednání" banner */
 .hero-badge-inline {
   margin-top: 32px;
   display: inline-flex; align-items: center; gap: 12px;
   padding: 14px 24px;
-  border: 1.5px solid var(--gold);
+  border: 1.5px solid rgba(166,132,47,.5);
   border-radius: 999px;
-  background: rgba(138,109,46,.06);
+  background: rgba(138,109,46,.15);
   opacity: 0; transform: translateY(12px);
   transition: all 1s var(--ease) .6s;
 }
@@ -321,7 +323,8 @@ section { position: relative; padding: 120px 0; border-top: 1px solid var(--line
   transition: background .4s;
 }
 .about-feat:hover { background: var(--bg-2); }
-.about-feat .ico { font-size: 24px; filter: grayscale(.3); margin-bottom: 4px; }
+.about-feat .ico { width: 28px; height: 28px; margin-bottom: 8px; color: var(--gold); }
+.about-feat .ico svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .about-feat h4 { font-family: var(--serif); font-size: 20px; color: var(--cream-soft); font-weight: 400; }
 .about-feat p { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
@@ -385,21 +388,34 @@ section { position: relative; padding: 120px 0; border-top: 1px solid var(--line
 .svc-note p { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
 /* ═══════════════════════════════════════
-   RECENZE (Jak o nás mluví?)
+   RECENZE SLIDER (Jak o nás mluví?)
    ═══════════════════════════════════════ */
 .reviews { background: var(--bg); }
-.tst-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-  background: var(--line); border: 1px solid var(--line);
+
+/* Slider track */
+.tst-slider {
+  position: relative; overflow: hidden;
+  margin: 0 -48px; padding: 0 48px;
 }
-@media (max-width: 880px) { .tst-grid { grid-template-columns: 1fr; } }
+@media (max-width: 780px) { .tst-slider { margin: 0 -20px; padding: 0 20px; } }
+.tst-track {
+  display: flex; gap: 20px;
+  transition: transform .6s var(--ease);
+  cursor: grab;
+}
+.tst-track.dragging { transition: none; cursor: grabbing; }
+
 .tst {
+  flex: 0 0 calc(33.333% - 14px);
   background: var(--bg); padding: 36px 28px;
   display: flex; flex-direction: column; gap: 18px;
   min-height: 280px; justify-content: space-between;
-  transition: background .4s;
+  border: 1px solid var(--line);
+  transition: background .4s, box-shadow .4s;
 }
-.tst:hover { background: var(--bg-2); }
+.tst:hover { background: var(--bg-2); box-shadow: 0 4px 24px rgba(42,38,32,.06); }
+@media (max-width: 880px) { .tst { flex: 0 0 calc(50% - 10px); } }
+@media (max-width: 580px) { .tst { flex: 0 0 100%; } }
 .tst-stars { color: var(--gold); letter-spacing: .16em; font-size: 13px; }
 .tst-quote {
   font-family: var(--serif); font-size: 19px; line-height: 1.4;
@@ -445,6 +461,30 @@ section { position: relative; padding: 120px 0; border-top: 1px solid var(--line
 }
 .tst-summary .div { width: 1px; height: 40px; background: var(--line); }
 @media (max-width: 680px) { .tst-summary .div { display: none; } .tst-summary { gap: 28px; } }
+
+/* Slider controls */
+.tst-nav {
+  display: flex; align-items: center; justify-content: center; gap: 20px;
+  margin-top: 40px;
+}
+.tst-btn {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 1.5px solid var(--line-strong); background: none; cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 18px; color: var(--cream-soft);
+  transition: all .35s;
+}
+.tst-btn:hover { background: var(--gold); color: var(--white); border-color: var(--gold); }
+.tst-btn:disabled { opacity: .3; pointer-events: none; }
+.tst-dots {
+  display: flex; gap: 8px;
+}
+.tst-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--line-strong); border: none; cursor: pointer;
+  transition: all .35s;
+}
+.tst-dot.active { background: var(--gold); transform: scale(1.3); }
 
 /* ═══════════════════════════════════════
    NÁVŠTĚVA (Kde a kdy?)
@@ -493,42 +533,23 @@ section { position: relative; padding: 120px 0; border-top: 1px solid var(--line
 .contact-row a { transition: color .3s; }
 .contact-row a:hover { color: var(--gold); }
 
-/* Map placeholder */
-.map {
+/* Google Maps embed */
+.map-embed {
   position: relative; aspect-ratio: 4/5; border: 1px solid var(--line); overflow: hidden;
-  background:
-    radial-gradient(ellipse at 50% 45%, rgba(138,109,46,.08), transparent 60%),
-    linear-gradient(180deg, var(--bg-2), var(--bg));
+  border-radius: 2px;
 }
-.map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.map .pin {
-  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -100%);
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
+.map-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map-embed-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 16px 20px;
+  background: linear-gradient(0deg, rgba(234,230,221,.95) 0%, rgba(234,230,221,0) 100%);
+  display: flex; justify-content: flex-end;
 }
-.map .pin .dot {
-  width: 12px; height: 12px; border-radius: 50%; background: var(--gold);
-  box-shadow: 0 0 0 5px rgba(138,109,46,.12), 0 0 20px rgba(138,109,46,.3);
-  animation: pulse 2.4s ease-in-out infinite;
-}
-.map .pin .stem { width: 1px; height: 40px; background: linear-gradient(180deg, var(--gold), transparent); }
-.map .addr {
-  position: absolute; left: 20px; bottom: 20px; right: 20px;
-  display: flex; justify-content: space-between; gap: 20px; align-items: flex-end;
+.map-embed-link {
   font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
-  text-transform: uppercase; color: var(--muted);
+  text-transform: uppercase; color: var(--gold); transition: color .3s;
 }
-.map .addr strong {
-  display: block; font-family: var(--serif); font-size: 16px; color: var(--cream-soft);
-  text-transform: none; letter-spacing: 0; margin-top: 4px; font-weight: 400;
-}
-.map .compass {
-  position: absolute; top: 20px; right: 20px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--muted);
-}
-.map .crosshair {
-  position: absolute; top: 20px; left: 20px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--muted);
-}
+.map-embed-link:hover { color: var(--cream-soft); }
 
 /* ═══════════════════════════════════════
    FOOTER
@@ -561,8 +582,7 @@ footer {
 <!-- ════════  NAV  ════════ -->
 <nav class="nav" id="nav">
   <a href="#" class="brand">
-    <span class="brand-mark">T</span>
-    <span class="brand-name">Tom<small>Kadeřnictví · Olomouc</small></span>
+    <img src="data:image/png;base64,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" alt="Kadeřnictví TOM" class="brand-logo">
   </a>
   <div class="nav-links">
     <a href="#kdo-jsme">Kdo jsme?</a>
@@ -591,7 +611,7 @@ footer {
 <header class="hero" id="hero">
   <div class="hero-video-wrap">
     <video autoplay muted loop playsinline>
-      <source src="AdobeStock_105618538.mov" type="video/mp4">
+      <source src="headpage.mov" type="video/mp4">
     </video>
   </div>
   <div class="hero-overlay"></div>
@@ -652,22 +672,22 @@ footer {
 
         <div class="about-features rv d2">
           <div class="about-feat">
-            <div class="ico">✂️</div>
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M6.5 6.5c1-1 2.5-2.5 5.5-2.5s4.5 1.5 5.5 2.5"/><path d="M3 13c0 0 1.5-3 4-3s3 2 3 2"/><path d="M14 12s1.5-2 4-2 4 3 4 3"/><line x1="7" y1="13" x2="7" y2="20"/><line x1="17" y1="13" x2="17" y2="20"/><path d="M7 20c2 0 3-1 5-1s3 1 5 1"/></svg></div>
             <h4>Bez objednání</h4>
             <p>Přijďte kdykoliv v otevírací době</p>
           </div>
           <div class="about-feat">
-            <div class="ico">💈</div>
+            <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/><line x1="18" y1="8" x2="22" y2="4"/></svg></div>
             <h4>Pánské & dětské</h4>
             <p>Střihy pro všechny věkové kategorie</p>
           </div>
           <div class="about-feat">
-            <div class="ico">🎨</div>
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v6"/><path d="M12 8c-3 0-5 2-5 5v1h10v-1c0-3-2-5-5-5z"/><path d="M7 14v2c0 1 .5 2 1.5 2.5"/><path d="M17 14v2c0 1-.5 2-1.5 2.5"/><circle cx="12" cy="20" r="2"/></svg></div>
             <h4>Barvení & melír</h4>
             <p>Profesionální barvicí techniky</p>
           </div>
           <div class="about-feat">
-            <div class="ico">💬</div>
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/><path d="M12 7v5l3 3"/></svg></div>
             <h4>Poradenství zdarma</h4>
             <p>Lupy, vypadávání, péče o vlasy</p>
           </div>
@@ -760,51 +780,196 @@ footer {
       </div>
     </div>
 
-    <div class="tst-grid">
-      <article class="tst rv">
-        <div>
-          <div class="tst-stars">★ ★ ★ ★ ★</div>
-          <p class="tst-quote">Dnes jsem navštívil. Přišel jsem jako bezdomovec, odešel jsem se super účesem. Musím slečnu vychválit — ukázal jsem fotku a ostříhala mě lépe jak na fotce.</p>
-        </div>
-        <div class="tst-meta">
-          <div class="tst-avatar">R</div>
-          <div>
-            <div class="tst-name">rexn</div>
-            <div class="tst-when">před 2 měsíci</div>
-          </div>
-          <span class="tst-src">Google</span>
-        </div>
-      </article>
+    <div class="tst-slider rv" id="tstSlider">
+      <div class="tst-track" id="tstTrack">
 
-      <article class="tst rv d1">
-        <div>
-          <div class="tst-stars">★ ★ ★ ☆ ☆</div>
-          <p class="tst-quote">Příjemný personál, kvalitní střih… jen stále plno. 2 hodiny před zavíračkou bez šance.</p>
-        </div>
-        <div class="tst-meta">
-          <div class="tst-avatar">S</div>
+        <article class="tst">
           <div>
-            <div class="tst-name">Stan Henkl</div>
-            <div class="tst-when">před 7 měsíci</div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Dnes jsem navštívil. Přišel jsem jako bezdomovec, odešel jsem se super účesem. Musím slečnu vychválit — ukázal jsem fotku a ostříhala mě lépe jak na fotce.</p>
           </div>
-          <span class="tst-src">Google</span>
-        </div>
-      </article>
+          <div class="tst-meta">
+            <div class="tst-avatar">R</div>
+            <div>
+              <div class="tst-name">rexn</div>
+              <div class="tst-when">před 2 měsíci</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
 
-      <article class="tst rv d2">
-        <div>
-          <div class="tst-stars">★ ★ ☆ ☆ ☆</div>
-          <p class="tst-quote">Kadeřnictví jako takové v pohodě. Cena přijatelná, kvalita dobrá. Střih trvá kolem 30 minut. Jen ta čekací doba je katastrofa — pokaždé plno.</p>
-        </div>
-        <div class="tst-meta">
-          <div class="tst-avatar">T</div>
+        <article class="tst">
           <div>
-            <div class="tst-name">Tomáš</div>
-            <div class="tst-when">před rokem</div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Za mě asi nejlepší zkušenost s kadeřnictvím za celý život. Po první návštěvě jsem se rozhodl, že jinam už ne.</p>
           </div>
-          <span class="tst-src">Google</span>
-        </div>
-      </article>
+          <div class="tst-meta">
+            <div class="tst-avatar">M</div>
+            <div>
+              <div class="tst-name">Matěj Cetkovský</div>
+              <div class="tst-when">před rokem</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Velice dobré kadeřnictví a skvělé kadeřnice. Jsem zákazníkem již více než 5 let a vždy maximálně spokojen.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">J</div>
+            <div>
+              <div class="tst-name">Jaromír Kudyn</div>
+              <div class="tst-when">před rokem</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Sice člověk musí chvilku čekat, ale za tu cenu dokonalost ♥️ Paní si hraje s každým detailem a vyrovnává se opravdu profesionálním barberům! Škoda, že vás nemáme na jihu Čech.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">K</div>
+            <div>
+              <div class="tst-name">Květa Kiclová</div>
+              <div class="tst-when">před rokem</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Bez objednání, pánský střih za 200–300 Kč podle náročnosti. Čekání zhruba 30 minut, za mě naprosto skvělé kadeřnictví s příjemnou atmosférou. Vřele doporučuji.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">T</div>
+            <div>
+              <div class="tst-name">Tomáš Bárta</div>
+              <div class="tst-when">před 2 lety</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Špičkové služby a velmi příjemný kolektiv žen. U stříhání si moc odpočinu a celá procedura je pro mě vždy velmi příjemná. Doporučuji se vyhnout pondělí a pátku — bývá narváno.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">P</div>
+            <div>
+              <div class="tst-name">Pavel Vysoudil</div>
+              <div class="tst-when">před 2 lety</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Nechávám zde stříhat syna, byli jsme již dvakrát a pokaždé absolutní spokojenost. Paní holičky stříhají skvěle, vyhrají si se stříháním do posledního detailu.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">P</div>
+            <div>
+              <div class="tst-name">Petra Sebránková</div>
+              <div class="tst-when">před 3 lety</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Mám za sebou už 5 návštěv a vždy jsem byl maximálně spokojený. Barber střih za velice příjemnou cenu, přitom s pečlivější péčí než v barber shopu. Milá obsluha.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">A</div>
+            <div>
+              <div class="tst-name">Antonín</div>
+              <div class="tst-when">před 2 lety</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Naprosto perfektní práce, po 4 letech co sem chodím, se to jen zlepšuje. Čekací doba je stále vyšší, ale i přesto se vyplatí počkat vzhledem ke kvalitě služeb.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">T</div>
+            <div>
+              <div class="tst-name">Tomáš Mikulecký</div>
+              <div class="tst-when">před rokem</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Byl jsem zde poprvé. Čekal jsem bezmála přes hodinu a půl. Ale můžu říct, že to čekání za to stálo. 👍 Profesionální přístup a bezchybné ostříhání od fajn slečny.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">M</div>
+            <div>
+              <div class="tst-name">Michal Ztrácel</div>
+              <div class="tst-when">před 3 lety</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Se stříháním jsme maximálně spokojeni. Byl se dát stříhat manžel i syn a paráda. Syn (3 roky) se sice nerad stříhá, ale řekl, že sem přijde znovu.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">G</div>
+            <div>
+              <div class="tst-name">Gabriela Jestřábová</div>
+              <div class="tst-when">před 2 lety</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+        <article class="tst">
+          <div>
+            <div class="tst-stars">★ ★ ★ ★ ★</div>
+            <p class="tst-quote">Velmi příjemná zkušenost. Oceňuji vstřícný přístup, kvalitní služby a rozumné ceny. Celkově jsem byl maximálně spokojen a rád se v budoucnu opět vrátím.</p>
+          </div>
+          <div class="tst-meta">
+            <div class="tst-avatar">J</div>
+            <div>
+              <div class="tst-name">Jan Dohnal</div>
+              <div class="tst-when">před 9 měsíci</div>
+            </div>
+            <span class="tst-src">Google</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="tst-nav rv">
+      <button class="tst-btn" id="tstPrev" aria-label="Předchozí">←</button>
+      <div class="tst-dots" id="tstDots"></div>
+      <button class="tst-btn" id="tstNext" aria-label="Další">→</button>
     </div>
 
     <div class="tst-summary rv">
@@ -860,40 +1025,21 @@ footer {
           <h4>Kontakt</h4>
           <div class="contact-row"><span class="lbl">Telefon</span><a href="tel:+420732390250">732 390 250</a></div>
           <div class="contact-row"><span class="lbl">E-mail</span><a href="mailto:tom@kadernictvi-tom.cz">tom@kadernictvi-tom.cz</a></div>
-          <div class="contact-row"><span class="lbl">Adresa</span><a>Schweitzerova 99, 779 00 Olomouc</a></div>
+          <div class="contact-row"><span class="lbl">Adresa</span><a>Schweitzerova 99, 779 00 Olomouc 9</a></div>
           <div class="contact-row"><span class="lbl">Web</span><a href="https://www.kadernictvi-tom.cz" target="_blank" rel="noopener" style="color:var(--gold)">kadernictvi-tom.cz</a></div>
         </div>
       </div>
 
       <div class="rv d2">
-        <div class="map" aria-hidden="true">
-          <svg viewBox="0 0 400 500" preserveAspectRatio="none">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(42,38,32,0.06)" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
-            <path d="M0 180 L400 210" stroke="rgba(42,38,32,0.12)" stroke-width="2" fill="none"/>
-            <path d="M0 240 L400 255" stroke="rgba(42,38,32,0.08)" stroke-width="1.5" fill="none"/>
-            <path d="M130 0 L155 500" stroke="rgba(42,38,32,0.12)" stroke-width="2" fill="none"/>
-            <path d="M270 0 L285 500" stroke="rgba(42,38,32,0.08)" stroke-width="1.5" fill="none"/>
-            <path d="M0 370 L400 355" stroke="rgba(42,38,32,0.08)" stroke-width="1.5" fill="none"/>
-            <ellipse cx="90" cy="380" rx="65" ry="45" fill="rgba(138,109,46,0.04)" stroke="rgba(138,109,46,0.12)"/>
-            <text x="90" y="384" text-anchor="middle" font-family="JetBrains Mono" font-size="8" letter-spacing="2" fill="rgba(42,38,32,0.25)">PARK</text>
-          </svg>
-          <div class="compass">N ↑</div>
-          <div class="crosshair">49.5855° N, 17.2573° E</div>
-          <div class="pin">
-            <div class="dot"></div>
-            <div class="stem"></div>
-          </div>
-          <div class="addr">
-            <div>
-              <span>Adresa</span>
-              <strong>Schweitzerova 99<br>Olomouc · Nové Sady</strong>
-            </div>
-            <a href="https://maps.google.com/?q=Schweitzerova+99,+Olomouc" target="_blank" rel="noopener" style="color:var(--gold)">Otevřít v mapě →</a>
+        <div class="map-embed">
+          <iframe
+            src="https://www.google.com/maps?q=Kade%C5%99nictv%C3%AD+Tom,+Schweitzerova+99,+Olomouc&output=embed"
+            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="map-embed-overlay">
+            <a href="https://maps.google.com/?q=Schweitzerova+99,+779+00+Olomouc+9" target="_blank" rel="noopener" class="map-embed-link">
+              Otevřít v Google Maps →
+            </a>
           </div>
         </div>
       </div>
@@ -914,7 +1060,7 @@ footer {
     </div>
     <div class="foot-bottom">
       <span>© 2026 · Kadeřnictví Tom</span>
-      <span>Schweitzerova 99 · Olomouc</span>
+      <span>Schweitzerova 99 · 779 00 Olomouc 9</span>
       <span><a href="tel:+420732390250">732 390 250</a></span>
       <span>IČ 68924623</span>
     </div>
@@ -972,6 +1118,103 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth", block: "start" }); }
   });
 });
+
+/* ═══ Review Slider ═══ */
+(function() {
+  const track = document.getElementById("tstTrack");
+  const slider = document.getElementById("tstSlider");
+  const prevBtn = document.getElementById("tstPrev");
+  const nextBtn = document.getElementById("tstNext");
+  const dotsWrap = document.getElementById("tstDots");
+  const cards = track.querySelectorAll(".tst");
+  let current = 0;
+  let perView = 3;
+  let autoTimer;
+
+  function getPerView() {
+    if (window.innerWidth <= 580) return 1;
+    if (window.innerWidth <= 880) return 2;
+    return 3;
+  }
+
+  function getMaxIndex() {
+    return Math.max(0, cards.length - perView);
+  }
+
+  function buildDots() {
+    dotsWrap.innerHTML = "";
+    const total = getMaxIndex() + 1;
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement("button");
+      dot.className = "tst-dot" + (i === current ? " active" : "");
+      dot.setAttribute("aria-label", "Strana " + (i + 1));
+      dot.addEventListener("click", () => goTo(i));
+      dotsWrap.appendChild(dot);
+    }
+  }
+
+  function updateSlider() {
+    const gap = 20;
+    const card = cards[0];
+    const cardW = card.offsetWidth + gap;
+    track.style.transform = `translateX(${-current * cardW}px)`;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current >= getMaxIndex();
+    dotsWrap.querySelectorAll(".tst-dot").forEach((d, i) => {
+      d.classList.toggle("active", i === current);
+    });
+  }
+
+  function goTo(i) {
+    current = Math.max(0, Math.min(i, getMaxIndex()));
+    updateSlider();
+    resetAuto();
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  prevBtn.addEventListener("click", prev);
+  nextBtn.addEventListener("click", next);
+
+  function resetAuto() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => {
+      if (current >= getMaxIndex()) goTo(0);
+      else next();
+    }, 5000);
+  }
+
+  /* Touch/drag support */
+  let startX = 0, moveX = 0, dragging = false;
+  track.addEventListener("touchstart", e => { startX = e.touches[0].clientX; dragging = true; }, { passive: true });
+  track.addEventListener("touchmove", e => { if (dragging) moveX = e.touches[0].clientX - startX; }, { passive: true });
+  track.addEventListener("touchend", () => {
+    if (Math.abs(moveX) > 50) { moveX < 0 ? next() : prev(); }
+    moveX = 0; dragging = false;
+  });
+
+  /* Mouse drag */
+  track.addEventListener("mousedown", e => { startX = e.clientX; dragging = true; track.classList.add("dragging"); e.preventDefault(); });
+  document.addEventListener("mousemove", e => { if (dragging) moveX = e.clientX - startX; });
+  document.addEventListener("mouseup", () => {
+    if (dragging) {
+      if (Math.abs(moveX) > 50) { moveX < 0 ? next() : prev(); }
+      moveX = 0; dragging = false; track.classList.remove("dragging");
+    }
+  });
+
+  function init() {
+    perView = getPerView();
+    if (current > getMaxIndex()) current = getMaxIndex();
+    buildDots();
+    updateSlider();
+    resetAuto();
+  }
+
+  init();
+  window.addEventListener("resize", init);
+})();
 </script>
 
 </body>
