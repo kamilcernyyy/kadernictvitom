@@ -408,34 +408,49 @@ section { position: relative; padding: 120px 0; border-top: 1px solid var(--line
 
 .tst {
   flex: 0 0 calc(33.333% - 14px);
-  background: var(--bg); padding: 36px 28px;
+  background: var(--bg); padding: 40px 28px 28px;
   display: flex; flex-direction: column; gap: 18px;
   min-height: 280px; justify-content: space-between;
   border: 1px solid var(--line);
-  transition: background .4s, box-shadow .4s;
+  transition: background .4s, box-shadow .4s, transform .4s;
+  position: relative; overflow: hidden;
 }
-.tst:hover { background: var(--bg-2); box-shadow: 0 4px 24px rgba(42,38,32,.06); }
+/* Color rotation — every 3rd card gets a different warm tone */
+.tst:nth-child(3n+2) { background: var(--bg-2); }
+.tst:nth-child(3n+3) { background: var(--bg-sage); }
+.tst:hover { box-shadow: 0 8px 32px rgba(42,38,32,.08); transform: translateY(-2px); }
+.tst:nth-child(3n+1):hover { background: var(--bg-2); }
+.tst:nth-child(3n+2):hover { background: var(--bg-3); }
+.tst:nth-child(3n+3):hover { background: var(--bg-2); }
 @media (max-width: 880px) { .tst { flex: 0 0 calc(50% - 10px); } }
 @media (max-width: 580px) { .tst { flex: 0 0 100%; } }
-.tst-stars { color: var(--gold); letter-spacing: .16em; font-size: 13px; }
+.tst-stars { color: var(--gold); letter-spacing: .16em; font-size: 13px; position: relative; z-index: 1; }
 .tst-quote {
-  font-family: var(--serif); font-size: 19px; line-height: 1.4;
+  font-family: var(--serif); font-size: 19px; line-height: 1.45;
   color: var(--cream-soft); font-weight: 300; text-wrap: pretty;
+  position: relative; z-index: 1;
 }
-.tst-quote::before {
-  content: "\201E"; font-size: 40px; color: var(--brass);
-  line-height: 0; display: block; height: 0; transform: translateY(16px);
+/* Decorative quote mark — top-right corner, behind text */
+.tst::before {
+  content: "\201C";
+  position: absolute; top: -28px; right: 14px;
+  font-family: var(--serif); font-size: 140px; line-height: 1;
+  color: var(--brass); opacity: .14;
+  pointer-events: none; z-index: 0;
+  font-weight: 500;
 }
 .tst-meta {
   display: flex; align-items: center; gap: 12px;
   border-top: 1px solid var(--line); padding-top: 16px;
+  position: relative; z-index: 1;
 }
 .tst-avatar {
   width: 36px; height: 36px; border-radius: 50%;
   border: 1px solid var(--line-strong);
   display: grid; place-items: center;
   font-family: var(--serif); font-style: italic; color: var(--gold);
-  background: var(--bg-2); font-size: 15px;
+  background: rgba(255,255,255,.5); font-size: 15px;
+  position: relative; z-index: 1;
 }
 .tst-name { font-size: 13px; color: var(--cream-soft); }
 .tst-when {
